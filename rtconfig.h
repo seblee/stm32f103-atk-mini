@@ -84,12 +84,19 @@
 #define RT_USING_SERIAL
 #define RT_SERIAL_USING_DMA
 #define RT_SERIAL_RB_BUFSZ 64
+#define RT_USING_HWTIMER
 #define RT_USING_PIN
-#define RT_USING_RTC
 #define RT_USING_SPI
+#define RT_USING_SFUD
+#define RT_SFUD_USING_SFDP
+#define RT_SFUD_USING_FLASH_INFO_TABLE
 
 /* Using Hardware Crypto drivers */
 
+#define RT_USING_HWCRYPTO
+#define RT_HWCRYPTO_DEFAULT_NAME "hwcryto"
+#define RT_HWCRYPTO_IV_MAX_SIZE 16
+#define RT_HWCRYPTO_KEYBIT_MAX_SIZE 256
 
 /* Using WiFi */
 
@@ -105,20 +112,9 @@
 
 /* Socket abstraction layer */
 
-#define RT_USING_SAL
-
-/* protocol stack implement */
-
-#define SAL_USING_AT
-#define SAL_SOCKETS_NUM 16
 
 /* Network interface device */
 
-#define RT_USING_NETDEV
-#define NETDEV_USING_IFCONFIG
-#define NETDEV_USING_PING
-#define NETDEV_USING_NETSTAT
-#define NETDEV_USING_AUTO_DEFAULT
 
 /* light weight TCP/IP stack */
 
@@ -128,13 +124,6 @@
 
 /* AT commands */
 
-#define RT_USING_AT
-#define AT_USING_CLIENT
-#define AT_CLIENT_NUM_MAX 1
-#define AT_USING_SOCKET
-#define AT_USING_CLI
-#define AT_CMD_MAX_LEN 128
-#define AT_SW_VERSION_NUM 0x10300
 
 /* VBUS(Virtual Software BUS) */
 
@@ -154,21 +143,6 @@
 
 /* Wiced WiFi */
 
-#define PKG_USING_AT_DEVICE
-#define AT_DEVICE_USING_EC20
-#define AT_DEVICE_EC20_SAMPLE
-#define EC20_SAMPLE_POWER_PIN -1
-#define EC20_SAMPLE_STATUS_PIN -1
-#define EC20_SAMPLE_CLIENT_NAME "uart2"
-#define EC20_SAMPLE_RECV_BUFF_LEN 512
-#define AT_DEVICE_USING_SIM76XX
-#define AT_DEVICE_SIM76XX_SAMPLE
-#define SIM76XX_SAMPLE_POWER_PIN -1
-#define SIM76XX_SAMPLE_STATUS_PIN -1
-#define SIM76XX_SAMPLE_CLIENT_NAME "uart2"
-#define SIM76XX_SAMPLE_RECV_BUFF_LEN 512
-#define PKG_USING_AT_DEVICE_LATEST_VERSION
-#define PKG_AT_DEVICE_VER_NUM 0x99999
 
 /* IoT Cloud */
 
@@ -213,10 +187,15 @@
 #define BSP_USING_UART
 #define BSP_USING_UART1
 #define BSP_UART1_RX_USING_DMA
+#define BSP_USING_TIM
+#define BSP_USING_TIM2
 #define BSP_USING_SPI
 #define BSP_USING_SPI1
 
 /* Board extended module Drivers */
 
+#define BSP_USING_CC1101
+#define BSP_CC1101_NAME "cc1101"
+#define BSP_CC1101_VALUE 1
 
 #endif

@@ -185,11 +185,22 @@ menu "On-chip Peripheral Drivers"
 endmenu
 
 menu "Board extended module Drivers"
-   config BSP_USING_CC1101
-        bool "Enable CC1101 (spi1)"
-        select BSP_USING_SPI
-        select BSP_USING_SPI1
-        default y
+
+        config BSP_USING_CC1101
+            bool "Enable CC1101 (spi1)"
+            select BSP_USING_SPI
+            select BSP_USING_SPI1
+            default y              
+            if BSP_USING_CC1101
+                config BSP_CC1101_NAME
+                    string "cc1101 name"
+                    default "cc1101"                    
+                config BSP_CC1101_VALUE
+                    int "cc1101 value"
+                    default 1   
+            endif        
+
+        
 endmenu
 
 endmenu

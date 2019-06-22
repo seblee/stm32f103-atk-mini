@@ -1,0 +1,22 @@
+from building import *
+
+cwd          = GetCurrentDir()
+include_path = [cwd]
+src          = []
+
+if GetDepend(['BSP_USING_CC1101']):
+    include_path += [cwd + '/rf_app/inc'] 
+    include_path += [cwd + '/drv_cc1101/inc'] 
+    include_path += [cwd + '/drv_operate/inc']
+    src = Glob('*.c')
+    src += Glob('rf_app/src/rf_app.c')
+    src += Glob('drv_cc1101/src/drv_cc1101.c')
+    src += Glob('drv_operate/src/rf_delay.c')
+    src += Glob('drv_operate/src/rf_spi.c')
+    src += Glob('drv_operate/src/rf_button.c')
+    src += Glob('drv_operate/src/rf_led.c')
+
+group = DefineGroup('RF_MODUL', src, depend = [''], CPPPATH = include_path)
+
+Return('group')
+ 

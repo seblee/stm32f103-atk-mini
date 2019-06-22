@@ -13,21 +13,23 @@
 #include <board.h>
 
 /* defined the LED0 pin: PB1 */
-#define LED0_PIN    GET_PIN(A, 8)
-
+//#define LED0_PIN    GET_PIN(A, 8)
+void rf_app(void *parameter);
 int main(void)
 {
-    int count = 1;
-    /* set LED0 pin mode to output */
-    rt_pin_mode(LED0_PIN, PIN_MODE_OUTPUT);
+      /* set LED0 pin mode to output */
+    //rt_pin_mode(LED0_PIN, PIN_MODE_OUTPUT);
+    /**
+     * init thread 
+     */
+    rt_thread_t rf_thread;
+    rf_thread = rt_thread_create("rf_app", rf_app, RT_NULL,
+                                 0x1000, 20, 5);
+    RT_ASSERT(rf_thread != RT_NULL);
+    if (rf_thread != RT_NULL)
+        rt_thread_startup(rf_thread);
 
-    while (count++)
-    {
-        rt_pin_write(LED0_PIN, PIN_HIGH);
-        rt_thread_mdelay(500);
-        rt_pin_write(LED0_PIN, PIN_LOW);
-        rt_thread_mdelay(500);
-    }
+ 
 
     return RT_EOK;
 }

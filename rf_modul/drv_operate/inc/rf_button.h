@@ -20,7 +20,7 @@
 #include <rthw.h>
 #include "board.h"
 
-#define BUTTON_PIN GET_PIN(A, 1)
+#define BUTTON_PIN GET_PIN(A, 0)
 
 /** 按键状态定义 */
 enum

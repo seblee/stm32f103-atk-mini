@@ -157,9 +157,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>57</LineNumber>
+          <LineNumber>81</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134245732</Address>
+          <Address>134245874</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -168,55 +168,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>rf_modul\rf_app\src\rf_app.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\rf_modul/rf_app/src/rf_app.c\57</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>61</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134245748</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>rf_modul\rf_app\src\rf_app.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\rf_modul/rf_app/src/rf_app.c\61</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>424</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220636</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>rf_modul\drv_cc1101\src\drv_CC1101.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\rf_modul/drv_cc1101/src/drv_CC1101.c\424</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>412</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220560</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>rf_modul\drv_cc1101\src\drv_CC1101.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\rf_modul/drv_cc1101/src/drv_CC1101.c\412</Expression>
+          <Expression>\\rt_thread\rf_modul/rf_app/src/rf_app.c\81</Expression>
         </Bp>
       </Breakpoint>
       <Tracepoint>
@@ -461,7 +413,7 @@
 
   <Group>
     <GroupName>Applications</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -481,7 +433,7 @@
 
   <Group>
     <GroupName>Drivers</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

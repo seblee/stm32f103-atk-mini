@@ -251,7 +251,7 @@ void CC1101_Set_Address(uint8_t Address, CC1101_AddrModeType AddressMode)
 
     btmp = CC1101_Read_Reg(CC1101_PKTCTRL1) & ~0x03; //读取CC1101_PKTCTRL1寄存器初始值
     CC1101_Write_Reg(CC1101_ADDR, Address);          //设置设备地址
-
+    LOG_I("PKTCTRL1:0x%02x", btmp);
     if (AddressMode == BROAD_ALL)
     {
     } //不检测地址
@@ -319,7 +319,7 @@ void CC1101_Clear_RxBuffer(void)
 void CC1101_Tx_Packet(uint8_t *pTxBuff, uint8_t TxSize, CC1101_TxDataModeType DataMode)
 {
     uint8_t Address;
-        uint16_t l_RxWaitTimeout = 0;
+    uint16_t l_RxWaitTimeout = 0;
 
     if (DataMode == BROADCAST)
     {
@@ -409,7 +409,7 @@ uint8_t CC1101_Rx_Packet(uint8_t *RxBuff)
         {
             l_PktLen--; //减去一个地址字节
         }
-        CC1101_Read_Multi_Reg(CC1101_RXFIFO, temp, l_PktLen); //读取数据
+        CC1101_Read_Multi_Reg(CC1101_RXFIFO, RxBuff, l_PktLen); //读取数据
         CC1101_Read_Multi_Reg(CC1101_RXFIFO, l_Status, 2);      //读取数据包最后两个额外字节，后一个为CRC标志位
 
         while (0 != CC1101_GET_GDO2_STATUS())
@@ -482,13 +482,17 @@ void CC1101_Init(void)
     VERSION_OF_CC = CC1101_Read_Reg(CC1101_VERSION);
     LOG_D("CC1101_PARTNUM:0x%02x CC1101_VERSION:0x%02x", PARTNUM_OF_CC, VERSION_OF_CC);
 
-    for (i = 0; i < 22; i++)
+    LOG_I("Write_Regs");
+    for (i = 0; i < 23; i++)
     {
         CC1101_Write_Reg(CC1101InitData[i][0], CC1101InitData[i][1]); //写入配置参数
     }
+    LOG_I("Write_Address");
     CC1101_Set_Address(0x05, BROAD_0AND255); //写入设备地址 和地址模式
-    CC1101_Set_Sync(0x8799);                 //写入同步字段
-    CC1101_Write_Reg(CC1101_MDMCFG1, 0x72);  //调制解调器配置
-
+    LOG_I("Write_Set_Sync");
+    CC1101_Set_Sync(0x8799); //写入同步字段
+    LOG_I("Write_MDMCFG1");
+    CC1101_Write_Reg(CC1101_MDMCFG1, 0x72); //调制解调器配置
+    LOG_I("Write_PATABLE");
     CC1101_Write_Multi_Reg(CC1101_PATABLE, (uint8_t *)PaTabel, 8);
 }

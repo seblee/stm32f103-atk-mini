@@ -13,15 +13,15 @@
   ******************************************************************************
   */
 
-#include "rf_app.h" 
+#include "rf_app.h"
 
-#define DBG_TAG    "rf.app"
-#define DBG_LVL    DBG_LOG
+#define DBG_TAG "rf.app"
+#define DBG_LVL DBG_LOG
 #include <rtdbg.h>
 
 const char *g_Ashining = "**ashining##";
 uint8_t g_UartRxBuffer[100] = {0};
-uint8_t g_RF24L01RxBuffer[32] = {0};
+uint8_t g_RF24L01RxBuffer[256] = {0};
 
 /**
   * @brief :主函数 
@@ -32,7 +32,7 @@ uint8_t g_RF24L01RxBuffer[32] = {0};
 void rf_app(void *parameter)
 {
     uint8_t i = 0;
-LOG_D( "rf_app");
+    LOG_E("rf_app");
     //LED初始化
     rf_led_init();
     //按键初始化
@@ -46,7 +46,7 @@ LOG_D( "rf_app");
         led_red_flashing();
         led_green_flashing();
         rf_delay_500Ms(1);
-    }CC1101_Clear_RxBuffer();
+    }
     CC1101_Set_RX_Mode();
     while (1)
     {
@@ -78,12 +78,13 @@ LOG_D( "rf_app");
         //=========================================================================================//
         if (0 == CC1101_GET_GDO0_STATUS()) //正在接收状态
         {
+            LOG_I("Rx_Packet");
             i = CC1101_Rx_Packet(g_RF24L01RxBuffer); //接收字节
             if (0 != i)
             {
                 led_green_flashing();
-              // rt_kprintf("%s", g_RF24L01RxBuffer ); //输出接收到的字节
-               // rt_memset(g_RF24L01RxBuffer,0,sizeof(g_RF24L01RxBuffer));
+                LOG_I("%s", g_RF24L01RxBuffer); //输出接收到的字节
+                rt_memset(g_RF24L01RxBuffer, 0, sizeof(g_RF24L01RxBuffer));
             }
         }
     }

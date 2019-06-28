@@ -157,9 +157,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>81</LineNumber>
+          <LineNumber>82</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134245874</Address>
+          <Address>134246402</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -168,9 +168,21 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>rf_modul\rf_app\src\rf_app.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\rf_modul/rf_app/src/rf_app.c\81</Expression>
+          <Expression>\\rt_thread\rf_modul/rf_app/src/rf_app.c\82</Expression>
         </Bp>
       </Breakpoint>
+      <WatchWindow1>
+        <Ww>
+          <count>0</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Key_Short_Restain_Count</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Key_Short_Restain_Trg</ItemText>
+        </Ww>
+      </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

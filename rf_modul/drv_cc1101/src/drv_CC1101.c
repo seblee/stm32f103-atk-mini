@@ -12,7 +12,7 @@
   * 阿里巴巴:	https://cdzeyao.1688.com
   ******************************************************************************
   */
-
+#include "rf_app.h"
 #include "drv_CC1101.h"
 #include "rf_delay.h"
 
@@ -47,6 +47,8 @@ static const uint8_t CC1101InitData[23][2] = {
     {CC1101_TEST2, 0x81},
     {CC1101_TEST1, 0x35},
 };
+
+CC1101_Modul_t g_Modul_state = {IDLE_MODE};
 
 /**
   * @brief :CC1101写命令
@@ -187,15 +189,15 @@ void CC1101_Set_Mode(CC1101_ModeType Mode)
     {
         CC1101_Write_Reg(CC1101_IOCFG0, 0x46);
         CC1101_Write_Cmd(CC1101_STX);
+        //  g_Modul_state.radioMode = TX_MODE;
+        while (0 != CC1101_GET_GDO0_STATUS())
+            ; //等待开始发送 或 接收
     }
     else if (Mode == RX_MODE) //接收模式
     {
         CC1101_Write_Reg(CC1101_IOCFG0, 0x46);
         CC1101_Write_Cmd(CC1101_SRX);
     }
-
-    //   while (0 != CC1101_GET_GDO0_STATUS())
-    ; //等待发送 或 接收开始
 }
 /**
   * @brief :CC1101发送接收模式设置
@@ -208,6 +210,8 @@ void CC1101_Set_RX_Mode(void)
 {
     CC1101_Write_Reg(CC1101_IOCFG0, 0x46);
     CC1101_Write_Cmd(CC1101_SRX);
+    g_Modul_state.radioMode = RX_MODE;
+    rt_pin_irq_enable(CC1101_GDO0_GPIO_PIN, PIN_IRQ_ENABLE);
 }
 
 /**
@@ -219,6 +223,7 @@ void CC1101_Set_RX_Mode(void)
 void CC1101_Set_Idle_Mode(void)
 {
     CC1101_Write_Cmd(CC1101_SIDLE);
+    // g_Modul_state.radioMode = IDLE_MODE;
 }
 
 /**
@@ -461,7 +466,22 @@ static void CC1101_Gpio_Init(void)
 {
     rt_pin_mode(CC1101_GDO0_GPIO_PIN, PIN_MODE_INPUT_PULLUP);
     rt_pin_mode(CC1101_GDO2_GPIO_PIN, PIN_MODE_INPUT_PULLUP);
+    /* 绑定中断，下降沿模式，回调函数名为beep_on */
+    rt_pin_attach_irq(CC1101_GDO0_GPIO_PIN, PIN_IRQ_MODE_FALLING, gdo0_irq, RT_NULL);
+    /* 使能中断 */
+    rt_pin_irq_enable(CC1101_GDO0_GPIO_PIN, PIN_IRQ_ENABLE);
 }
+
+/**
+************************************************************************************************************************
+ * @Function 	:		
+ * @author		: 	xiaowine@cee0.com
+ * @brief 		: 	
+ * @param 		: 	
+ * @Return  	:		None
+ * @?μ?÷			:		
+************************************************************************************************************************
+*/
 
 /**
   * @brief :CC1101初始化
@@ -495,4 +515,53 @@ void CC1101_Init(void)
     CC1101_Write_Reg(CC1101_MDMCFG1, 0x72); //调制解调器配置
     LOG_I("Write_PATABLE");
     CC1101_Write_Multi_Reg(CC1101_PATABLE, (uint8_t *)PaTabel, 8);
+}
+
+//-------------------------------------------------------------------------------------------------------
+//  BYTE spiGetRxStatus(void)
+//
+//  DESCRIPTION:
+//      This function transmits a No Operation Strobe (SNOP) with the read bit set to get the status of
+//      the radio.
+//
+//      Status byte:
+//
+//      --------------------------------------------------------------------------------
+//      |          |            |                                                      |
+//      | CHIP_RDY | STATE[2:0] | FIFO_BYTES_AVAILABLE (available bytes in the RX FIFO |
+//      |          |            |                                                      |
+//      --------------------------------------------------------------------------------
+//
+//      STATE[2:0]:
+//
+//      Value | State
+//      --------------------------
+//      000   | Idle
+//      001   | RX
+//      010   | TX
+//      011   | FSTXON
+//      100   | CALIBRATE
+//      101   | SETTLING
+//      110   | RXFIFO_OVERFLOW
+//      111   | TX_FIFO_UNDERFLOW
+//-------------------------------------------------------------------------------------------------------
+uint8_t CC1101_GetRxStatus(void)
+{
+    uint8_t l_RegValue = 0;
+
+    CC1101_SET_CSN_LOW();
+
+    // Strobe SNOP with the read byte set to get info on current state and number of bits in the RX FIFO
+    l_RegValue = rf_spi_read_write_byte(CC1101_SNOP | READ_SINGLE); //单独读命令 及地址
+    l_RegValue = rf_spi_read_write_byte(0xFF);                      //读取寄存器
+    CC1101_SET_CSN_HIGH();
+
+    return l_RegValue;
+
+} // spiGetRxStatus
+
+void CC1101_Error_Handle(void)
+{
+    uint8_t state;
+    state = CC1101_GetRxStatus();
 }

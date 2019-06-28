@@ -21,4 +21,6 @@
 #include "rf_led.h"
 #include "rf_button.h"
 
+void gdo0_irq(void *args);
+
 #endif

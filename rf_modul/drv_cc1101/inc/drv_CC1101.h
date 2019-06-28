@@ -40,6 +40,7 @@
 /** 枚举量定义 */
 typedef enum
 {
+    IDLE_MODE,
     TX_MODE,
     RX_MODE
 } CC1101_ModeType;
@@ -57,6 +58,14 @@ typedef enum
     BROADCAST,
     ADDRESS_CHECK
 } CC1101_TxDataModeType;
+
+typedef struct
+{
+    CC1101_ModeType radioMode;
+
+} CC1101_Modul_t;
+
+extern CC1101_Modul_t g_Modul_state;
 
 void CC1101_Write_Cmd(uint8_t Command);
 void CC1101_Write_Reg(uint8_t Addr, uint8_t WriteValue);
@@ -77,5 +86,6 @@ uint8_t CC1101_Get_RxCounter(void);
 uint8_t CC1101_Rx_Packet(uint8_t *RxBuff);
 void CC1101_Reset(void);
 void CC1101_Init(void);
+uint8_t CC1101_GetRxStatus(void);
 
 #endif

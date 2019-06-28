@@ -22,6 +22,11 @@
 
 #define BUTTON_PIN GET_PIN(A, 0)
 
+#define LONG_PRESS_TIMES 250           //250 × 20ms = 5s
+#define ALARM_OFF_LONG_PRESS_TIMES 200 //200 × 20ms = 4s
+#define SHSORT_RESTAIN_TIMES 50        //50 × 20ms = 1s
+#define SW_LIGHT_TIMES 250             //250 × 20ms = 5s
+
 /** 按键状态定义 */
 enum
 {

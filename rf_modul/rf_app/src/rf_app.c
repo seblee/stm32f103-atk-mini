@@ -86,9 +86,9 @@ void rf_app(void *parameter)
         }
         else /************************************* 接收 **********************************************/
         {
-            uint8_t statue;
+            CC1101_Status_t statue;
              statue = CC1101_GetRxStatus();
-            LOG_I("statue:0x%02x", statue);
+            LOG_I("statue:0x%02x", statue.BYTE);
             if (0 == CC1101_GET_GDO0_STATUS()) //正在接收状态
             {
                 LOG_I("Rx_Packet");

@@ -18,7 +18,9 @@
 
 #include "rf_spi.h"
 #include "drv_CC1101_Reg.h"
-
+#if defined(__CC_ARM)
+#pragma anon_unions
+#endif
 #define PA_TABLE                                        \
     {                                                   \
         0xc2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
@@ -65,6 +67,33 @@ typedef struct
 
 } CC1101_Modul_t;
 
+//      --------------------------------------------------------------------------------
+//      |          |            |                                                      |
+//      | CHIP_RDY | STATE[2:0] | FIFO_BYTES_AVAILABLE (available bytes in the RX FIFO |
+//      |          |            |                                                      |
+//      --------------------------------------------------------------------------------
+typedef enum
+{
+    STATE_Idle,
+    STATE_RX,
+    STATE_TX,
+    STATE_FSTXON,
+    STATE_CALIBRATE,
+    STATE_SETTLING,
+    STATE_RXFIFO_OVERFLOW,
+    STATE_TX_FIFO_UNDERFLOW,
+} CC1101_state;
+
+typedef union {
+    unsigned char BYTE;
+    struct
+    {
+        unsigned char FIFO_BYTES_AVAILABLE : 4; // Bit 0:3;
+        unsigned char STATE : 3;                // Bit 4:6;
+        unsigned char CHIP_RDY : 1;             // Bit7;
+    };
+} CC1101_Status_t;
+
 extern CC1101_Modul_t g_Modul_state;
 
 void CC1101_Write_Cmd(uint8_t Command);
@@ -86,6 +115,6 @@ uint8_t CC1101_Get_RxCounter(void);
 uint8_t CC1101_Rx_Packet(uint8_t *RxBuff);
 void CC1101_Reset(void);
 void CC1101_Init(void);
-uint8_t CC1101_GetRxStatus(void);
+CC1101_Status_t CC1101_GetRxStatus(void);
 
 #endif

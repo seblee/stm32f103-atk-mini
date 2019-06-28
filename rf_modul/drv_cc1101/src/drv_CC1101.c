@@ -189,7 +189,7 @@ void CC1101_Set_Mode(CC1101_ModeType Mode)
     {
         CC1101_Write_Reg(CC1101_IOCFG0, 0x46);
         CC1101_Write_Cmd(CC1101_STX);
-        //  g_Modul_state.radioMode = TX_MODE;
+        g_Modul_state.radioMode = TX_MODE;
         while (0 != CC1101_GET_GDO0_STATUS())
             ; //等待开始发送 或 接收
     }
@@ -360,6 +360,7 @@ void CC1101_Tx_Packet(uint8_t *pTxBuff, uint8_t TxSize, CC1101_TxDataModeType Da
             break;
         }
     }
+    g_Modul_state.radioMode = RX_MODE;
 }
 
 /**
@@ -545,15 +546,15 @@ void CC1101_Init(void)
 //      110   | RXFIFO_OVERFLOW
 //      111   | TX_FIFO_UNDERFLOW
 //-------------------------------------------------------------------------------------------------------
-uint8_t CC1101_GetRxStatus(void)
+CC1101_Status_t CC1101_GetRxStatus(void)
 {
-    uint8_t l_RegValue = 0;
+    CC1101_Status_t l_RegValue;
 
     CC1101_SET_CSN_LOW();
 
     // Strobe SNOP with the read byte set to get info on current state and number of bits in the RX FIFO
-    l_RegValue = rf_spi_read_write_byte(CC1101_SNOP | READ_SINGLE); //单独读命令 及地址
-    l_RegValue = rf_spi_read_write_byte(0xFF);                      //读取寄存器
+    l_RegValue.BYTE = rf_spi_read_write_byte(CC1101_SNOP | READ_SINGLE); //单独读命令 及地址
+    l_RegValue.BYTE = rf_spi_read_write_byte(0xFF);                      //读取寄存器
     CC1101_SET_CSN_HIGH();
 
     return l_RegValue;
@@ -562,6 +563,44 @@ uint8_t CC1101_GetRxStatus(void)
 
 void CC1101_Error_Handle(void)
 {
-    uint8_t state;
-    state = CC1101_GetRxStatus();
+    CC1101_Status_t status;
+    status = CC1101_GetRxStatus();
+
+    switch (status.STATE)
+    {
+    case STATE_Idle:
+        break;
+    case STATE_RX:
+        break;
+    case STATE_TX:
+        break;
+    case STATE_FSTXON:
+        break;
+    case STATE_CALIBRATE:
+        break;
+    case STATE_SETTLING:
+        break;
+    case STATE_RXFIFO_OVERFLOW:
+        CC1101_Clear_RxBuffer();
+        CC1101_Set_RX_Mode();
+        break;
+    case STATE_TX_FIFO_UNDERFLOW:
+        CC1101_Clear_TxBuffer();
+        CC1101_Set_RX_Mode();
+        break;
+    }
+
+    switch (g_Modul_state.radioMode)
+    {
+    case IDLE_MODE:
+        CC1101_Set_RX_Mode();
+        break;
+    case TX_MODE:
+        CC1101_Init();
+        CC1101_Set_RX_Mode();
+        break;
+    case RX_MODE:
+
+        break;
+    }
 }

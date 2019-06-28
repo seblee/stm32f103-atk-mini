@@ -15,6 +15,8 @@
 
 #include "rf_led.h"
 
+rt_mq_t led_mq = RT_NULL;
+
 /**
   * @brief :LED初始化
   * @param :无
@@ -25,6 +27,20 @@ void rf_led_init(void)
 {
     rt_pin_mode(LED_RED_PIN, PIN_MODE_OUTPUT);
     rt_pin_mode(LED_GREEN_PIN, PIN_MODE_OUTPUT);
+
+    led_mq = rt_mq_create("led_mq", 4, 10, RT_IPC_FLAG_FIFO);
+    if (led_mq != RT_NULL)
+    {
+        rt_kprintf("CREAT message queue failed.\n");
+        return -1;
+    }
+
+    rt_thread_t rf_thread;
+    rf_thread = rt_thread_create("rf_led", rf_led, RT_NULL,
+                                 256, 30, 30);
+    RT_ASSERT(rf_thread != RT_NULL);
+    if (rf_thread != RT_NULL)
+        rt_thread_startup(rf_thread);
 }
 
 /**
@@ -81,5 +97,11 @@ void rf_led_flashing(LedPortType LedPort)
     else
     {
         HAL_GPIO_TogglePin(LED_GREEN_GPIO_PORT, LED_GREEN_GPIO_PIN);
+    }
+}
+void rf_app(void *parameter)
+{
+    while (1)
+    {
     }
 }

@@ -33,9 +33,16 @@
 /** LED定义 */
 typedef enum LedPort
 {
-    LED_RED = 0, //红色LED
-    LED_GREEN    //绿色LED
+  LED_RED = 0, //红色LED
+  LED_GREEN    //绿色LED
 } LedPortType;
+typedef enum
+{
+  LED_SEND ,    //SEND FLASH
+  LED_RECEIVE, //RECEIVE FLASH
+} LedCmdType;
+
+extern rt_mq_t led_mq;
 
 void rf_led_init(void);
 void rf_led_on(LedPortType LedPort);
@@ -50,5 +57,8 @@ void rf_led_flashing(LedPortType LedPort);
 #define led_green_on() rf_led_on(LED_GREEN)
 #define led_green_off() rf_led_off(LED_GREEN)
 #define led_green_flashing() rf_led_flashing(LED_GREEN)
+
+void rf_led(void *parameter);
+void operate_led(LedCmdType cmd);
 
 #endif

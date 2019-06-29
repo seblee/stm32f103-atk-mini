@@ -31,7 +31,7 @@ rt_sem_t rf_sem = RT_NULL;
   */
 void rf_app(void *parameter)
 {
-    uint8_t i = 0;
+    uint8_t i = 0; 
     static rt_err_t result;
     LOG_E("rf_app");
     /* 创建一个动态信号量，初始值是 0 */
@@ -71,23 +71,17 @@ void rf_app(void *parameter)
             if ((BUTOTN_PRESS_DOWN == key_value) && (0 != CC1101_GET_GDO0_STATUS()))
             {
                 //状态显示清零
-                led_red_off();
-                for (i = 0; i < 6; i++)
-                {
-                    led_red_flashing();
-                    rf_delay_ms(250);
-                }
+                /* 发送消息到消息队列中 */
+                operate_led(LED_SEND);
                 //************************************* 发送 **********************************************//
                 CC1101_Tx_Packet((uint8_t *)g_Ashining, 12, ADDRESS_CHECK); //模式1发送固定字符,1S一包
-                led_red_flashing();
-                rf_delay_ms(250);
-                led_red_off();
+    
             }
         }
         else /************************************* 接收 **********************************************/
         {
             CC1101_Status_t statue;
-             statue = CC1101_GetRxStatus();
+            statue = CC1101_GetRxStatus();
             LOG_I("statue:0x%02x", statue.BYTE);
             if (0 == CC1101_GET_GDO0_STATUS()) //正在接收状态
             {
@@ -95,7 +89,7 @@ void rf_app(void *parameter)
                 i = CC1101_Rx_Packet(g_RF24L01RxBuffer); //接收字节
                 if (0 != i)
                 {
-                    led_green_flashing();
+                    operate_led(LED_RECEIVE);
                     LOG_I("%s", g_RF24L01RxBuffer); //输出接收到的字节
                     rt_memset(g_RF24L01RxBuffer, 0, sizeof(g_RF24L01RxBuffer));
                 }

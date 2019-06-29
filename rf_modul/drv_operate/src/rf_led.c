@@ -14,6 +14,7 @@
   */
 
 #include "rf_led.h"
+#include "rf_delay.h"
 
 rt_mq_t led_mq = RT_NULL;
 
@@ -28,11 +29,11 @@ void rf_led_init(void)
     rt_pin_mode(LED_RED_PIN, PIN_MODE_OUTPUT);
     rt_pin_mode(LED_GREEN_PIN, PIN_MODE_OUTPUT);
 
-    led_mq = rt_mq_create("led_mq", 4, 10, RT_IPC_FLAG_FIFO);
-    if (led_mq != RT_NULL)
+    led_mq = rt_mq_create("led_mq", 1, 10, RT_IPC_FLAG_FIFO);
+    if (led_mq == RT_NULL)
     {
         rt_kprintf("CREAT message queue failed.\n");
-        return -1;
+        return;
     }
 
     rt_thread_t rf_thread;
@@ -99,9 +100,45 @@ void rf_led_flashing(LedPortType LedPort)
         HAL_GPIO_TogglePin(LED_GREEN_GPIO_PORT, LED_GREEN_GPIO_PIN);
     }
 }
-void rf_app(void *parameter)
+void rf_led(void *parameter)
 {
+    char buf = 0;
     while (1)
     {
+        /* 从消息队列中接收消息 */
+        if (rt_mq_recv(led_mq, &buf, sizeof(buf), RT_WAITING_FOREVER) == RT_EOK)
+        {
+            switch (buf)
+            {
+            case 0: //send flash
+                for (int i = 0; i < 6; i++)
+                {
+                    led_red_flashing();
+                    rf_delay_ms(100);
+                }
+                break;
+            case 1: //received flash
+                for (int i = 0; i < 6; i++)
+                {
+                    led_green_flashing();
+                    rf_delay_ms(100);
+                }
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void operate_led(LedCmdType cmd)
+{
+    uint8_t buf = (uint8_t)cmd;
+    rt_err_t result;
+    result = rt_mq_send(led_mq, &buf, 1);
+    if (result != RT_EOK)
+    {
+        rt_kprintf("rt_mq_send ERR\n");
     }
 }
